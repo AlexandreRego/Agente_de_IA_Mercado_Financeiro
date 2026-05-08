@@ -11,7 +11,7 @@ Através da integração de APIs financeiras e uma arquitetura multi-agentes bas
 
 ## [cite_start]📸 Demonstração da Aplicação (Visualização dos Dados [cite: 16])
 
-*Nota: Vá até o repositório do projeto e observe o arquivo "Exemplo - Com_D.A - Busca e Análise de Preços de Ações" com o resultado de uma pesquisa.*
+*Nota: Vá até o arquivo em PDF nos documentos desse repositório para ver um resultado de pesquisa realizada.*
 
 ---
 
