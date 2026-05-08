@@ -1,9 +1,76 @@
-# Módulo Especial de Consultoria na Área de Dados com Agentes de IA
-# Projeto Prático Para Consultoria na Área de Dados com Agentes de IA
-# Deploy de App Para Day Trade Analytics em Tempo Real com Agentes de IA, Groq, DeepSeek e AWS Para Monetização
+# 📈 Com:D.A - Busca e Análise de Preços de Ações
 
+**Módulo Especial de Consultoria na Área de Dados com Agentes de IA** *Deploy de App Para Day Trade Analytics em Tempo Real com Agentes de IA e Gemini*
+---
 
-##### Execução Local #####
+## 🚀 Sobre o Projeto
+
+[cite_start]O projeto é uma aplicação web interativa desenvolvida para atuar como uma Comunidade de Dados e Automação[cite: 2]. [cite_start]O objetivo principal é fornecer uma "Análise do Mercado de Ações em Tempo Real"[cite: 4], focada em investidores de curto prazo (Day Trade). 
+
+Através da integração de APIs financeiras e uma arquitetura multi-agentes baseada em Inteligência Artificial (Google Gemini), o sistema coleta o histórico de ações, extrai as notícias mais recentes do mercado e gera um relatório acionável, completo com análise de sentimento e recomendações diretas.
+
+## [cite_start]📸 Demonstração da Aplicação (Visualização dos Dados [cite: 16])
+
+*Nota: As imagens abaixo demonstram o painel gerado dinamicamente no Streamlit.*
+
+### Gráfico de Linha e Tendência Histórica
+[cite_start]O aplicativo gera o histórico da ação, como o gráfico de "Preços das Ações (Últimos 6 Meses)"[cite: 17].
+![Gráfico de Preços](docs/grafico_linha.png)
+
+### Candlestick e Médias Móveis
+[cite_start]Visão detalhada com o "Candlestick Chart (Últimos 6 Meses)" [cite: 18] [cite_start]e acompanhamento de tendência usando "Médias Móveis (Últimos 6 Meses)"[cite: 19].
+![Candlestick e Médias Móveis](docs/grafico_candle_medias.png)
+
+### Volume de Negociação
+[cite_start]Análise do fluxo com o gráfico de "Trading Volume (Últimos 6 Meses)"[cite: 20].
+![Volume de Negociação](docs/grafico_volume.png)
+
+---
+
+## ✨ Funcionalidades Principais
+
+* [cite_start]**Menu de Configurações Dinâmico**: Permite configurar a "Análise" [cite: 1] [cite_start]e "Selecione um Ativo da Lista:"[cite: 3], suportando mercado global (EUA, Europa, Ásia) e a B3 (Brasil), com detecção inteligente de moedas.
+* **Dados Financeiros em Tempo Real**: Consome dados da API Alpha Vantage para extração de preços (OHLC) e volume.
+* [cite_start]**Análise Gerada Por IA**[cite: 12]: Uma equipe de agentes de Inteligência Artificial fornece relatórios sob demanda contendo:
+    * [cite_start]**Resumo de Variações**: Tabelas de performance diária, semanal e mensal[cite: 13].
+    * [cite_start]**Sentimento do Mercado (Curto Prazo)**[cite: 14]: Análise de notícias via *DuckDuckGo Search* e Alpha Vantage Sentiment.
+    * [cite_start]**Ação Recomendada para Day Trade**[cite: 15]: Sugestões práticas de viés, justificativa de mercado e nível de risco calculado pela IA.
+* **Painéis Interativos (Plotly)**: Visualização rica e interativa para suporte à tomada de decisão.
+
+---
+
+## 🤖 Arquitetura Multi-Agentes (Phi Data & Gemini)
+
+A aplicação utiliza o modelo **Gemini 2.5 Flash** orquestrado pela biblioteca **Phi**:
+1.  **Agente Pesquisa Web**: Especialista em varrer a internet via DuckDuckGo em busca de fatos macroeconômicos e manchetes urgentes que impactem o mercado hoje.
+2.  **Agente Análise Financeira**: Focado em consumir feeds de notícias (Alpha Vantage Sentiment) e destilar o sentimento geral dos ativos escolhidos.
+3.  **Agente Líder (Analista Sênior)**: Consolida as informações dos dois agentes anteriores e formata a saída em um relatório "limpo e em tópicos", focado puramente em insights acionáveis.
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+* **Linguagem**: Python
+* **Interface Web**: Streamlit
+* **Visualização de Dados**: Plotly (Express & Graph Objects) e Pandas
+* **Inteligência Artificial**: Google Generative AI (Gemini) e Phi Data (Agent framework)
+* **Integrações de API**: Alpha Vantage (Market Data & News Sentiment) e DuckDuckGo (Web Search)
+
+---
+
+## ⚙️ Como Executar o Projeto Localmente
+
+### Pré-requisitos
+* Python 3.9+ instalado.
+* Chave de API do Google Gemini (`GOOGLE_API_KEY`).
+* Chave de API da Alpha Vantage (`ALPHA_VANTAGE_API_KEY`).
+
+### Passo a Passo
+
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/seu-usuario/com-da-analytics.git](https://github.com/seu-usuario/com-da-analytics.git)
+   cd com-da-analytics
 
 # Instale o Anaconda Python no seu computador. Links de download para instalação:
 
@@ -14,11 +81,11 @@ https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Linux-x86_64.sh    (Qualqu
 
 # Abra o terminal ou prompt de comando, navegue até a pasta com os arquivos e execute o comando abaixo para criar um ambiente virtual:
 
-conda create --name dsadeployai python=3.12
+conda create --name agentedeployai python=3.12
 
 # Ative o ambiente:
 
-conda activate dsadeployai (ou: source activate dsadeployai)
+conda activate agentedeployai (ou: source activate dsadeployai)
 
 # Instale o pip e as dependências:
 
@@ -27,44 +94,14 @@ pip install -r requirements.txt
 
 # Execute o comando abaixo e acesse a app pelo navegador.
 
-streamlit run dsa_app.py
+streamlit run comda_app.py
 
 # Use os comandos abaixo para desativar o ambiente virtual e remover o ambiente (opcional):
 
 conda deactivate
-conda remove --name dsadeployai --all
+conda remove --name agentedeployai --all
 
 
-##### Execução na AWS #####
-
-# Crie sua conta gratuita na AWS.
-
-# Crie uma instância EC2 da camada gratuita AWS.
-
-# Acesse a instância pelo terminal conforme mostrado nas aulas.
-
-# Faça o download do Miniconda (Anaconda é muito pesado para a instância EC2 gratuita) com o comando abaixo:
-
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-
-# Crie a pasta app e copie os arquivos como mostrado nas aulas.
-
-# Execute o comando abaixo:
-
-pip install -r requirements.txt 
-
-# Inicie a app com um dos comandos abaixo:
-
-streamlit run dsa_app.py
-nohup streamlit run dsa_app.py --server.port=8501 --server.address=0.0.0.0 &
-
-# Acesse a app pelo navegador.
-
-# Resolva problemas de acesso como mostrado nas aulas.
-
-# Inicie a monetização da app com seus clientes.
-
-# Nota: Quando terminar seus testes, desligue a instância EC2 conforme mostrado nas aulas.
 
 
 

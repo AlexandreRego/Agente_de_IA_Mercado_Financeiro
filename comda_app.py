@@ -286,6 +286,13 @@ def identificar_moeda(ticker):
 if "ticker_input" not in st.session_state:
     st.session_state["ticker_input"] = ""
 
+if "selecao_dropdown" not in st.session_state:
+    st.session_state["selecao_dropdown"] = "Outro (Digitar manualmente)"
+
+def atualizar_input():
+    """Função callback para preencher o input text quando o dropdown for alterado"""
+    selecao = st.session_state["selecao_dropdown"]
+
 def atualizar_input():
     """Função callback para preencher o input text quando o dropdown for alterado"""
     selecao = st.session_state["selecao_dropdown"]
