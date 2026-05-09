@@ -1,8 +1,3 @@
-# Módulo Especial de Consultoria na Área de Dados com Agentes de IA
-# Projeto Prático Para Consultoria na Área de Dados com Agentes de IA
-# Deploy de App Para Day Trade Analytics em Tempo Real com Agentes de IA, Gemini e AWS Para Monetização
-
-# Imports
 import os
 import re
 import requests
@@ -73,6 +68,19 @@ if not google_api_key or not alpha_vantage_key:
 os.environ["GOOGLE_API_KEY"] = google_api_key
 genai.configure(api_key=google_api_key)
 
+# ==========================================
+# MENSAGEM DE FINOPS PADRONIZADA
+# ==========================================
+MENSAGEM_FINOPS = """
+**Aviso de Limite de Recursos (FinOps)**
+
+Agradecemos muito pelo seu interesse no **Com:D.A**! 🚀
+
+No momento, a análise não pôde ser executada pois atingimos o limite de custos das APIs (uma diretriz de segurança do projeto estipulada por mim).
+
+Caso queira realizar um teste, por favor, entre em contato comigo! :) Temos também um documento PDF no nosso repositório do GitHub com um exemplo de pesquisa já realizada.
+"""
+
 ########## Analytics (Usando Alpha Vantage) ##########
 
 @st.cache_data
@@ -83,7 +91,8 @@ def comda_extrai_dados(ticker):
     data = response.json()
     
     if "Time Series (Daily)" not in data:
-        st.error(f"Erro ao buscar dados para {ticker}. Verifique o ticker ou o limite da API.")
+        # Se for limite da API da Alpha Vantage, já mostra a mensagem amigável
+        st.warning(MENSAGEM_FINOPS)
         return pd.DataFrame()
         
     # Converter JSON para DataFrame Pandas
@@ -255,34 +264,19 @@ DICIONARIO_ACOES = {
 
 def identificar_moeda(ticker):
     """Retorna o código da moeda e o símbolo correspondente com inteligência ampliada."""
-    # Se estiver no dicionário, pega as infos diretas
     if ticker in DICIONARIO_ACOES:
         moeda = DICIONARIO_ACOES[ticker]["moeda"]
-        # Mapeamento estendido de símbolos
-        simbolos = {
-            "BRL": "R$",
-            "USD": "$",
-            "EUR": "€",
-            "GBP": "£",
-            "JPY": "¥"
-        }
+        simbolos = {"BRL": "R$", "USD": "$", "EUR": "€", "GBP": "£", "JPY": "¥"}
         return moeda, simbolos.get(moeda, "$")
     
-    # Se o usuário digitar um ticker manualmente, tenta inferir pelo sufixo (Bolsas Alpha Vantage)
-    elif ticker.endswith(".SA"):
-        return "BRL", "R$"
-    elif ticker.endswith(".DEX") or ticker.endswith(".PAR") or ticker.endswith(".AS") or ticker.endswith(".MIL"):
-        return "EUR", "€"
-    elif ticker.endswith(".LON"):
-        return "GBP", "£"
-    elif ticker.endswith(".TOK"):
-        return "JPY", "¥"
-    else:
-        return "USD", "$"
+    elif ticker.endswith(".SA"): return "BRL", "R$"
+    elif ticker.endswith(".DEX") or ticker.endswith(".PAR") or ticker.endswith(".AS") or ticker.endswith(".MIL"): return "EUR", "€"
+    elif ticker.endswith(".LON"): return "GBP", "£"
+    elif ticker.endswith(".TOK"): return "JPY", "¥"
+    else: return "USD", "$"
 
 ########## App Web (Interface) ##########
 
-# Inicializa o session state para o text input se não existir
 if "ticker_input" not in st.session_state:
     st.session_state["ticker_input"] = ""
 
@@ -290,22 +284,14 @@ if "selecao_dropdown" not in st.session_state:
     st.session_state["selecao_dropdown"] = "Outro (Digitar manualmente)"
 
 def atualizar_input():
-    """Função callback para preencher o input text quando o dropdown for alterado"""
-    selecao = st.session_state["selecao_dropdown"]
-
-def atualizar_input():
-    """Função callback para preencher o input text quando o dropdown for alterado"""
     selecao = st.session_state["selecao_dropdown"]
     if selecao != "Outro (Digitar manualmente)":
-        # Extrai apenas o Ticker (tudo antes do " - ")
         st.session_state["ticker_input"] = selecao.split(" - ")[0]
     else:
-        # Limpa o input para o usuário digitar livremente
         st.session_state["ticker_input"] = ""
 
 st.sidebar.title("Configurações da Análise")
 
-# Criando as opções para o dropdown
 opcoes_dropdown = ["Outro (Digitar manualmente)"] + [f"{ticker} - {dados['empresa']} ({dados['nacionalidade']}, {dados['moeda']})" 
                                                      for ticker, dados in DICIONARIO_ACOES.items()]
 
@@ -329,13 +315,12 @@ with col_img:
     try:
         st.image(icone_app, width=100) 
     except NameError:
-        pass # Imagem não carregada, ignora
+        pass 
 with col_titulo:
     st.title("Com:D.A - Comunidade de Dados e Automação")
 
 st.header("Análise do Mercado de Ações em Tempo Real")
 
-# Input text principal conectado ao session_state
 ticker = st.text_input("Digite o Código (símbolo do ticker):", key="ticker_input").upper()
 
 if st.button("Analisar"):
@@ -347,20 +332,16 @@ if st.button("Analisar"):
             if not hist.empty:
                 st.subheader("Análise Gerada Por IA")
                 
-                # Identifica Moeda Dinamicamente
                 moeda_codigo, moeda_simbolo = identificar_moeda(ticker)
                 
-                # --- 1. CÁLCULO DE VARIAÇÕES RECENTES (PANDAS) ---
                 try:
                     preco_atual = hist['Close'].iloc[-1]
                     preco_anterior = hist['Close'].iloc[-2]
                     var_diaria = ((preco_atual - preco_anterior) / preco_anterior) * 100
                     
-                    # Variação 1 semana (aprox 5 dias úteis)
                     preco_1s = hist['Close'].iloc[-6] if len(hist) >= 6 else hist['Close'].iloc[0]
                     var_1s = ((preco_atual - preco_1s) / preco_1s) * 100
                     
-                    # Variação 1 mês (aprox 21 dias úteis)
                     preco_1m = hist['Close'].iloc[-22] if len(hist) >= 22 else hist['Close'].iloc[0]
                     var_1m = ((preco_atual - preco_1m) / preco_1m) * 100
                     
@@ -375,10 +356,8 @@ if st.button("Analisar"):
                 except IndexError:
                     dados_tabela = "Dados insuficientes para calcular variações."
 
-                # Recupera o nome da empresa se estiver no dicionário, senão usa só o ticker
                 nome_empresa = DICIONARIO_ACOES[ticker]['empresa'] if ticker in DICIONARIO_ACOES else ticker
 
-                # --- 2. NOVO PROMPT DIRECIONADO PARA DADOS ACIONÁVEIS ---
                 prompt = f"""
                 Aja como um analista quantitativo de Day Trade. Analise a ação {ticker} ({nome_empresa}).
                 
@@ -399,11 +378,14 @@ if st.button("Analisar"):
                 **Nível de Risco:** (Alto, Médio, Baixo).
                 """
                 
-                # --- 3. EXECUÇÃO DO AGENTE ---
-                ai_response = multi_ai_agent.run(prompt)
-
-                clean_response = re.sub(r"(Running:[\s\S]*?\n\n)|(^transfer_task_to_finance_ai_agent.*\n?)","", ai_response.content, flags=re.MULTILINE).strip()
-                st.markdown(clean_response)
+                # --- 3. EXECUÇÃO DO AGENTE (COM TRATAMENTO DE ERRO DE CUSTOS/FINOPS) ---
+                try:
+                    ai_response = multi_ai_agent.run(prompt)
+                    clean_response = re.sub(r"(Running:[\s\S]*?\n\n)|(^transfer_task_to_finance_ai_agent.*\n?)","", ai_response.content, flags=re.MULTILINE).strip()
+                    st.markdown(clean_response)
+                except Exception as e:
+                    # Captura o erro da API (falta de crédito/quota) e exibe a mensagem amigável
+                    st.warning(MENSAGEM_FINOPS)
 
                 st.markdown("---")
                 st.subheader("Visualização dos Dados")
